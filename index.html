@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTDR SOR File Generator & Editor</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>📊 OTDR SOR File Generator</h1>
+                <p>Buat dan Edit File SOR untuk OTDR secara mudah</p>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="create">🆕 Buat SOR Baru</button>
+            <button class="tab-btn" data-tab="edit">✏️ Edit SOR</button>
+            <button class="tab-btn" data-tab="template">📋 Template Preset</button>
+            <button class="tab-btn" data-tab="help">❓ Bantuan</button>
+        </nav>
+
+        <!-- Tab Content -->
+        <main class="tab-content">
+            <!-- TAB 1: CREATE NEW SOR -->
+            <section id="create" class="tab-pane active">
+                <div class="form-container">
+                    <h2>Buat File SOR Baru</h2>
+                    <form id="createForm" class="form-grid">
+                        <!-- OTDR Settings -->
+                        <fieldset class="form-section">
+                            <legend>⚙️ Pengaturan OTDR</legend>
+                            <div class="form-group">
+                                <label>Wavelength (nm) *</label>
+                                <select name="wavelength" required>
+                                    <option value="1310">1310 nm</option>
+                                    <option value="1550">1550 nm</option>
+                                    <option value="1625">1625 nm</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Pulse Width (m) *</label>
+                                <input type="number" name="pulseWidth" min="0.3" max="100" step="0.1" value="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Range / Jarak Ukur (km) *</label>
+                                <input type="number" name="range" min="1" max="100" step="1" value="50" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Resolution (m)</label>
+                                <input type="number" name="resolution" min="0.1" max="10" step="0.1" value="1">
+                            </div>
+                        </fieldset>
+
+                        <!-- Cable Information -->
+                        <fieldset class="form-section">
+                            <legend>📍 Informasi Kabel</legend>
+                            <div class="form-group">
+                                <label>Cable ID *</label>
+                                <input type="text" name="cableId" placeholder="Contoh: CORE-001" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Fiber ID</label>
+                                <input type="text" name="fiberId" placeholder="Contoh: F1">
+                            </div>
+                            <div class="form-group">
+                                <label>Fiber Type *</label>
+                                <select name="fiberType" required>
+                                    <option value="SMF">SMF (Single Mode Fiber)</option>
+                                    <option value="MMF">MMF (Multi Mode Fiber)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Cable Code</label>
+                                <input type="text" name="cableCode" placeholder="Contoh: G.652.D">
+                            </div>
+                        </fieldset>
+
+                        <!-- Location -->
+                        <fieldset class="form-section">
+                            <legend>🗺️ Lokasi</legend>
+                            <div class="form-group">
+                                <label>Organizational Location (Awal) *</label>
+                                <input type="text" name="orgLocation" placeholder="Contoh: Jakarta" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Termination Location (Akhir) *</label>
+                                <input type="text" name="termLocation" placeholder="Contoh: Bandung" required>
+                            </div>
+                        </fieldset>
+
+                        <!-- Device Info -->
+                        <fieldset class="form-section">
+                            <legend>🔧 Informasi Perangkat</legend>
+                            <div class="form-group">
+                                <label>OTDR Model *</label>
+                                <select name="otdrModel" required>
+                                    <option value="ANRITSU MT9090A">ANRITSU MT9090A</option>
+                                    <option value="ANRITSU MT9082A">ANRITSU MT9082A</option>
+                                    <option value="Custom">Custom</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Serial Number (OTDR) *</label>
+                                <input type="text" name="otdrSN" placeholder="Contoh: 6262072557" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Optics Module S/N</label>
+                                <input type="text" name="opticsModuleSN" placeholder="Contoh: MU9090 14C-057">
+                            </div>
+                            <div class="form-group">
+                                <label>Software Version</label>
+                                <input type="text" name="swVersion" placeholder="Contoh: 3.00" value="3.00">
+                            </div>
+                        </fieldset>
+
+                        <!-- Events -->
+                        <fieldset class="form-section">
+                            <legend>🎯 Events (Opsional)</legend>
+                            <div class="form-group">
+                                <label>Jumlah Splice</label>
+                                <input type="number" name="numSplice" min="0" max="100" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Jumlah Connector</label>
+                                <input type="number" name="numConnector" min="0" max="100" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Jumlah Break/Discontinuity</label>
+                                <input type="number" name="numBreak" min="0" max="100" value="0">
+                            </div>
+                        </fieldset>
+
+                        <!-- Data Configuration -->
+                        <fieldset class="form-section">
+                            <legend>📊 Konfigurasi Data</legend>
+                            <div class="form-group">
+                                <label>Jumlah Data Points *</label>
+                                <input type="number" name="numDataPoints" min="100" max="100000" step="100" value="5000" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Attenuation Rate (dB/km) *</label>
+                                <input type="number" name="attenuationRate" min="0.1" max="1" step="0.01" value="0.35" required>
+                            </div>
+                        </fieldset>
+
+                        <!-- Metadata -->
+                        <fieldset class="form-section">
+                            <legend>📝 Metadata</legend>
+                            <div class="form-group">
+                                <label>Operator Name *</label>
+                                <input type="text" name="operator" placeholder="Nama teknisi" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Condition</label>
+                                <select name="condition">
+                                    <option value="OT">OT (Normal)</option>
+                                    <option value="ER">ER (After Repair)</option>
+                                    <option value="PR">PR (Preinst. Repair)</option>
+                                </select>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Comment</label>
+                                <textarea name="comment" placeholder="Catatan tambahan (opsional)" rows="3"></textarea>
+                            </div>
+                        </fieldset>
+
+                        <!-- Action Buttons -->
+                        <div class="form-actions full-width">
+                            <button type="button" class="btn btn-secondary" id="previewBtn">👁️ Preview Data</button>
+                            <button type="button" class="btn btn-primary" id="generateBtn">📥 Generate & Download SOR</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- TAB 2: EDIT SOR -->
+            <section id="edit" class="tab-pane">
+                <div class="form-container">
+                    <h2>Edit File SOR yang Ada</h2>
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">📂</div>
+                        <p>Drag & drop file SOR di sini atau klik untuk memilih</p>
+                        <input type="file" id="fileInput" accept=".sor" style="display: none;">
+                    </div>
+
+                    <form id="editForm" class="form-grid" style="display: none;">
+                        <h3>Parameter yang Dapat Diubah</h3>
+                        <fieldset class="form-section">
+                            <legend>📋 Informasi Dasar</legend>
+                            <div class="form-group">
+                                <label>Cable ID</label>
+                                <input type="text" name="cableId" id="editCableId">
+                            </div>
+                            <div class="form-group">
+                                <label>Operator Name</label>
+                                <input type="text" name="operator" id="editOperator">
+                            </div>
+                            <div class="form-group">
+                                <label>Organizational Location</label>
+                                <input type="text" name="orgLocation" id="editOrgLocation">
+                            </div>
+                            <div class="form-group">
+                                <label>Termination Location</label>
+                                <input type="text" name="termLocation" id="editTermLocation">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Comment</label>
+                                <textarea name="comment" id="editComment" rows="3"></textarea>
+                            </div>
+                        </fieldset>
+
+                        <div class="form-actions full-width">
+                            <button type="button" class="btn btn-secondary" id="clearEditBtn">🔄 Clear</button>
+                            <button type="button" class="btn btn-primary" id="updateBtn">💾 Update & Download SOR</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- TAB 3: TEMPLATE -->
+            <section id="template" class="tab-pane">
+                <div class="form-container">
+                    <h2>Template Preset</h2>
+                    <div class="template-grid">
+                        <button class="template-card" data-template="anritsu-standard">
+                            <div class="template-icon">🔷</div>
+                            <h3>Anritsu Standard</h3>
+                            <p>1310nm, 10m pulse, 50km range</p>
+                        </button>
+                        <button class="template-card" data-template="anritsu-extended">
+                            <div class="template-icon">🔶</div>
+                            <h3>Anritsu Extended</h3>
+                            <p>1310nm, 30m pulse, 100km range</p>
+                        </button>
+                        <button class="template-card" data-template="high-resolution">
+                            <div class="template-icon">🔹</div>
+                            <h3>High Resolution</h3>
+                            <p>1550nm, 0.3m pulse, 10km range</p>
+                        </button>
+                        <button class="template-card" data-template="long-range">
+                            <div class="template-icon">🔸</div>
+                            <h3>Long Range</h3>
+                            <p>1550nm, 100m pulse, 100km range</p>
+                        </button>
+                        <button class="template-card" data-template="standard-test">
+                            <div class="template-icon">⚪</div>
+                            <h3>Standard Test</h3>
+                            <p>1310nm, 5m pulse, 25km range</p>
+                        </button>
+                    </div>
+
+                    <form id="templateForm" class="form-grid" style="display: none;">
+                        <!-- Same form as create tab -->
+                        <fieldset class="form-section">
+                            <legend>⚙️ Pengaturan OTDR</legend>
+                            <div class="form-group">
+                                <label>Wavelength (nm) *</label>
+                                <select name="wavelength" required>
+                                    <option value="1310">1310 nm</option>
+                                    <option value="1550">1550 nm</option>
+                                    <option value="1625">1625 nm</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Pulse Width (m) *</label>
+                                <input type="number" name="pulseWidth" min="0.3" max="100" step="0.1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Range / Jarak Ukur (km) *</label>
+                                <input type="number" name="range" min="1" max="100" step="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Resolution (m)</label>
+                                <input type="number" name="resolution" min="0.1" max="10" step="0.1" value="1">
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="form-section">
+                            <legend>📍 Informasi Kabel</legend>
+                            <div class="form-group">
+                                <label>Cable ID *</label>
+                                <input type="text" name="cableId" placeholder="Contoh: CORE-001" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Fiber ID</label>
+                                <input type="text" name="fiberId" placeholder="Contoh: F1">
+                            </div>
+                            <div class="form-group">
+                                <label>Fiber Type *</label>
+                                <select name="fiberType" required>
+                                    <option value="SMF">SMF (Single Mode Fiber)</option>
+                                    <option value="MMF">MMF (Multi Mode Fiber)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Cable Code</label>
+                                <input type="text" name="cableCode" placeholder="Contoh: G.652.D">
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="form-section">
+                            <legend>🗺️ Lokasi</legend>
+                            <div class="form-group">
+                                <label>Organizational Location (Awal) *</label>
+                                <input type="text" name="orgLocation" placeholder="Contoh: Jakarta" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Termination Location (Akhir) *</label>
+                                <input type="text" name="termLocation" placeholder="Contoh: Bandung" required>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="form-section">
+                            <legend>🔧 Informasi Perangkat</legend>
+                            <div class="form-group">
+                                <label>OTDR Model *</label>
+                                <select name="otdrModel" required>
+                                    <option value="ANRITSU MT9090A">ANRITSU MT9090A</option>
+                                    <option value="ANRITSU MT9082A">ANRITSU MT9082A</option>
+                                    <option value="Custom">Custom</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Serial Number (OTDR) *</label>
+                                <input type="text" name="otdrSN" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Optics Module S/N</label>
+                                <input type="text" name="opticsModuleSN">
+                            </div>
+                            <div class="form-group">
+                                <label>Software Version</label>
+                                <input type="text" name="swVersion" value="3.00">
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="form-section">
+                            <legend>🎯 Events (Opsional)</legend>
+                            <div class="form-group">
+                                <label>Jumlah Splice</label>
+                                <input type="number" name="numSplice" min="0" max="100" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Jumlah Connector</label>
+                                <input type="number" name="numConnector" min="0" max="100" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Jumlah Break/Discontinuity</label>
+                                <input type="number" name="numBreak" min="0" max="100" value="0">
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="form-section">
+                            <legend>📊 Konfigurasi Data</legend>
+                            <div class="form-group">
+                                <label>Jumlah Data Points *</label>
+                                <input type="number" name="numDataPoints" min="100" max="100000" step="100" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Attenuation Rate (dB/km) *</label>
+                                <input type="number" name="attenuationRate" min="0.1" max="1" step="0.01" required>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="form-section">
+                            <legend>📝 Metadata</legend>
+                            <div class="form-group">
+                                <label>Operator Name *</label>
+                                <input type="text" name="operator" placeholder="Nama teknisi" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Condition</label>
+                                <select name="condition">
+                                    <option value="OT">OT (Normal)</option>
+                                    <option value="ER">ER (After Repair)</option>
+                                    <option value="PR">PR (Preinst. Repair)</option>
+                                </select>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Comment</label>
+                                <textarea name="comment" placeholder="Catatan tambahan (opsional)" rows="3"></textarea>
+                            </div>
+                        </fieldset>
+
+                        <div class="form-actions full-width">
+                            <button type="button" class="btn btn-secondary" id="backTemplateBtn">⬅️ Kembali</button>
+                            <button type="button" class="btn btn-primary" id="generateTemplateBtn">📥 Generate & Download SOR</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- TAB 4: HELP -->
+            <section id="help" class="tab-pane">
+                <div class="help-container">
+                    <h2>📚 Bantuan & Dokumentasi</h2>
+
+                    <div class="help-section">
+                        <h3>🎯 Cara Menggunakan</h3>
+                        <div class="help-content">
+                            <h4>1. Buat SOR Baru</h4>
+                            <ol>
+                                <li>Isi semua field yang ditandai dengan (*)</li>
+                                <li>Klik "Preview Data" untuk melihat preview</li>
+                                <li>Klik "Generate & Download SOR" untuk download</li>
+                            </ol>
+
+                            <h4>2. Edit SOR Existing</h4>
+                            <ol>
+                                <li>Drag & drop file SOR atau klik untuk memilih</li>
+                                <li>Modifikasi parameter yang diinginkan</li>
+                                <li>Klik "Update & Download SOR"</li>
+                            </ol>
+
+                            <h4>3. Gunakan Template</h4>
+                            <ol>
+                                <li>Pilih template preset yang sesuai</li>
+                                <li>Form akan terisi otomatis</li>
+                                <li>Modifikasi jika diperlukan</li>
+                                <li>Generate file</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="help-section">
+                        <h3>📖 Penjelasan Parameter</h3>
+                        <div class="help-content">
+                            <h4>Pengaturan OTDR</h4>
+                            <ul>
+                                <li><strong>Wavelength:</strong> Frekuensi cahaya yang digunakan (1310nm untuk short/medium, 1550nm untuk long distance)</li>
+                                <li><strong>Pulse Width:</strong> Lebar pulsa cahaya (semakin kecil = semakin detail, semakin besar = semakin jauh)</li>
+                                <li><strong>Range:</strong> Maksimal jarak pengukuran</li>
+                                <li><strong>Resolution:</strong> Ketelitian pengukuran jarak</li>
+                            </ul>
+
+                            <h4>Fiber Type</h4>
+                            <ul>
+                                <li><strong>SMF:</strong> Single Mode Fiber - untuk jarak jauh, atenuasi rendah</li>
+                                <li><strong>MMF:</strong> Multi Mode Fiber - untuk jarak pendek, atenuasi lebih tinggi</li>
+                            </ul>
+
+                            <h4>Condition</h4>
+                            <ul>
+                                <li><strong>OT:</strong> Operational Test (normal)</li>
+                                <li><strong>ER:</strong> Emergency Repair</li>
+                                <li><strong>PR:</strong> Pre-Installation Repair</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="help-section">
+                        <h3>💡 Tips & Trik</h3>
+                        <div class="help-content">
+                            <ul>
+                                <li>Gunakan naming convention yang konsisten untuk Cable ID (misal: CORE-001, CROSS-A01)</li>
+                                <li>Template memudahkan Anda untuk membuat file dengan setting standard</li>
+                                <li>Preview data sebelum generate untuk memastikan parameter sudah benar</li>
+                                <li>Attenuation rate standard untuk SMF ~0.35 dB/km @ 1550nm</li>
+                                <li>Backup file SOR original sebelum edit</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="help-section">
+                        <h3>🔒 Data Privacy</h3>
+                        <div class="help-content">
+                            <p>✅ Semua processing dilakukan <strong>di browser Anda</strong> (client-side)</p>
+                            <p>✅ <strong>Tidak ada data</strong> yang dikirim ke server</p>
+                            <p>✅ File diproses dan di-generate secara <strong>lokal</strong></p>
+                            <p>✅ <strong>Aman</strong> untuk data sensitif atau confidential</p>
+                        </div>
+                    </div>
+
+                    <div class="help-section">
+                        <h3>⚠️ Troubleshooting</h3>
+                        <div class="help-content">
+                            <h4>File tidak bisa di-upload</h4>
+                            <ul>
+                                <li>Pastikan file format SOR yang benar</li>
+                                <li>Coba file dari Anritsu atau tools sejenis</li>
+                            </ul>
+
+                            <h4>Data points tidak sesuai</h4>
+                            <ul>
+                                <li>Preview hanya menampilkan 20 data points pertama</li>
+                                <li>File actual berisi semua data sesuai konfigurasi</li>
+                            </ul>
+
+                            <h4>Error saat generate</h4>
+                            <ul>
+                                <li>Pastikan semua field required sudah diisi</li>
+                                <li>Cek console browser (F12 → Console) untuk error detail</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="help-section">
+                        <h3>📞 Support & Feedback</h3>
+                        <div class="help-content">
+                            <p>Repository: <a href="https://github.com/junisoe/otdr" target="_blank">https://github.com/junisoe/otdr</a></p>
+                            <p>Jika ada bug atau saran, buat issue di repository GitHub.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Modal Preview -->
+        <div id="previewModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>📊 Preview Data Points</h3>
+                    <button class="modal-close" onclick="closePreviewModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-info" id="modalInfo"></div>
+                    <div class="modal-table-wrapper">
+                        <table class="modal-table" id="previewTable">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Distance (km)</th>
+                                    <th>Power (dBm)</th>
+                                    <th>Reflectance (dB)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="closePreviewModal()">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/sor-utils.js"></script>
+    <script src="js/sor-generator.js"></script>
+    <script src="js/sor-parser.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
